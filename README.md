@@ -22,14 +22,6 @@ By utilizing HuggingFace Transformers (Sentence-BERT) and SpaCy, this tool provi
 - **High-Performance Backend:** FastAPI backend ensuring rapid text processing and model inference.
 - **Dark Mode UI:** Premium, aesthetic dark mode dashboard designed for modern recruiters.
 
-## 📸 Screenshots
-
-### 1. Dashboard Overview
-![Dashboard Overview](./data/Screenshot%202026-05-10%20151415.png)
-
-### 2. Analysis & Ranking Results
-![Ranking Results](./data/Screenshot%202026-05-10%20151506.png)
-
 ## 🏗️ Architecture
 ```text
 [ Resumes (PDF/DOCX) ]     [ Job Description (Text) ]

@@ -20,6 +20,15 @@ By utilizing HuggingFace Transformers (Sentence-BERT) and SpaCy, this tool provi
 - **Multi-Format Support:** Processes both PDF and DOCX resume formats.
 - **Modern Full-Stack UI:** A responsive, real-time dashboard built with Next.js and Tailwind CSS.
 - **High-Performance Backend:** FastAPI backend ensuring rapid text processing and model inference.
+- **Dark Mode UI:** Premium, aesthetic dark mode dashboard designed for modern recruiters.
+
+## 📸 Screenshots
+
+### 1. Dashboard Overview
+![Dashboard Overview](./data/Screenshot%202026-05-10%20151415.png)
+
+### 2. Analysis & Ranking Results
+![Ranking Results](./data/Screenshot%202026-05-10%20151506.png)
 
 ## 🏗️ Architecture
 ```text

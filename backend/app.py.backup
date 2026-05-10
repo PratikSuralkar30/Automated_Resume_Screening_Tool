@@ -1,0 +1,56 @@
+import streamlit as st
+import pandas as pd
+from src.document_io import extract_text
+from src.nlp_engine import load_models, clean_text, extract_entities, get_semantic_scores
+
+st.set_page_config(page_title="AI Semantic Screener", page_icon="🧠", layout="wide")
+
+st.title("🧠 AI Semantic Resume Screener")
+st.markdown("*Powered by HuggingFace Transformers & SpaCy Named Entity Recognition*")
+
+with st.spinner("Loading Deep Learning Models... This may take a moment on first run."):
+    nlp, transformer_model = load_models()
+
+col1, col2 = st.columns([1, 1])
+
+with col1:
+    st.subheader("📝 Job Description")
+    jd_input = st.text_area("Paste JD here:", height=300)
+
+with col2:
+    st.subheader("📂 Candidate Resumes")
+    uploaded_files = st.file_uploader("Upload PDF/DOCX files", accept_multiple_files=True, type=["pdf", "docx"])
+
+if st.button("🚀 Run Semantic Analysis", use_container_width=True, type="primary"):
+    if jd_input and uploaded_files:
+        progress_bar = st.progress(0)
+        
+        cleaned_jd = clean_text(jd_input)
+        results = []
+        resume_texts = []
+        
+        for i, file in enumerate(uploaded_files):
+            raw_text = extract_text(file)
+            cleaned_text = clean_text(raw_text)
+            resume_texts.append(cleaned_text)
+            
+            name = extract_entities(cleaned_text, nlp)
+            results.append({"Filename": file.name, "Extracted Name": name})
+            progress_bar.progress((i + 1) / (len(uploaded_files) * 2))
+
+        scores = get_semantic_scores(cleaned_jd, resume_texts, transformer_model)
+        
+        for i, score in enumerate(scores):
+            results[i]["Semantic Match (%)"] = score
+            progress_bar.progress(0.5 + ((i + 1) / (len(uploaded_files) * 2)))
+            
+        progress_bar.empty()
+        
+        df = pd.DataFrame(results).sort_values(by="Semantic Match (%)", ascending=False).reset_index(drop=True)
+        
+        st.success("✅ Analysis Complete!")
+        st.dataframe(df.style.background_gradient(cmap="Greens", subset=["Semantic Match (%)"]), use_container_width=True)
+        
+        st.download_button("📥 Export AI Report to CSV", df.to_csv(index=False).encode('utf-8'), "semantic_results.csv", "text/csv")
+    else:
+        st.error("Please provide both a JD and at least one resume.")
